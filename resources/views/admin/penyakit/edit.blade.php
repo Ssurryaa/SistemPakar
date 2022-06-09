@@ -7,7 +7,7 @@
           <div class="card-header pb-0">
             <div class="card-header pb-0 p-3">
                 <div class="col-6 d-flex align-items-center">
-                    <h6 class="mb-0">Tambah Data Penyakit Mata</h6>
+                    <h6 class="mb-0">Edit Data Penyakit Mata</h6>
                 </div>
             </div>
             <div class="card-body">

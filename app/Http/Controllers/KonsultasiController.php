@@ -31,8 +31,10 @@ class KonsultasiController extends Controller
 
     private function selectGejala($pasien_id) {
     	$gejala = Gejala::where('id', 1)->first();
+        $next = 1;
         $categories = Category::all();
-    	return view('konsultasi_form_gejala', compact('gejala', 'pasien_id', 'categories'));
+        $gejalas = Gejala::all()->count();
+    	return view('konsultasi_form_gejala', compact('gejala', 'pasien_id', 'categories', 'gejalas', 'next'));
     }
 
     public function konsultasi(Request $request){
@@ -42,68 +44,22 @@ class KonsultasiController extends Controller
         $next = $gejala_id + 1;
         
         $gejala = Gejala::where('id', $next)->first();
-        $gejalas = Gejala::all();
+        $gejalas = Gejala::all()->count();
         $categories = Category::all();
-        if($next <= count($gejalas)){
-            if($jawaban == 'Iya'){
-                $gejala_pasien = new GejalaPasien;
-                $gejala_pasien->pasien_id = $pasien_id;
-                $gejala_pasien->gejala_id = $gejala_id;
-                $gejala_pasien->jawaban = 'Iya';
-                $gejala_pasien->save();
-            }elseif($jawaban == 'Tidak'){
-                $gejala_pasien = new GejalaPasien;
-                $gejala_pasien->pasien_id = $pasien_id;
-                $gejala_pasien->gejala_id = $gejala_id;
-                $gejala_pasien->jawaban = 'Tidak';
-                $gejala_pasien->save();
-            }
-            return view('konsultasi_form_gejala', compact('gejala', 'pasien_id', 'categories'));
-        }else{
-            if($jawaban == 'Iya'){
-                $gejala_pasien = new GejalaPasien;
-                $gejala_pasien->pasien_id = $pasien_id;
-                $gejala_pasien->gejala_id = $gejala_id;
-                $gejala_pasien->jawaban = 'Iya';
-                $gejala_pasien->save();
-            }elseif($jawaban == 'Tidak'){
-                $gejala_pasien = new GejalaPasien;
-                $gejala_pasien->pasien_id = $pasien_id;
-                $gejala_pasien->gejala_id = $gejala_id;
-                $gejala_pasien->jawaban = 'Tidak';
-                $gejala_pasien->save();
-            }
-            $gejala_pasien = GejalaPasien::where('pasien_id', $pasien_id)->get();
-            foreach($gejala_pasien as $gejalas){
-                $gejala = GejalaPenyakit::where('gejala_id', $gejalas->gejala_id)->get();
-                foreach ($gejala as $penyakit) {
-                    $penyakit_count = GejalaPenyakit::where('penyakit_id', $penyakit->penyakit_id)->get();
-                                //dd($penyakit_count);
-                    $temp_diagnosa = TempDiagnosa::where('pasien_id', $pasien_id)->where('penyakit_id', $penyakit->penyakit_id);
-                    $temp_diag = $temp_diagnosa->first();
-                    if (!$temp_diag) {
-                        $temp_diag = new TempDiagnosa;
-                        $temp_diag->pasien_id = $pasien_id;
-                        $temp_diag->penyakit_id = $penyakit->penyakit_id;
-                        $temp_diag->gejala = count($penyakit_count);
-                        $temp_diag->gejala_terpenuhi = 1;
-                        $temp_diag->save();
-                    } else {
-                        $temp_diag = $temp_diagnosa->update(['gejala_terpenuhi' => $temp_diag->gejala_terpenuhi + 1]);
-                    }
-                }  
-            }
+        
+        $gejala_pasien = new GejalaPasien;
+        $gejala_pasien->pasien_id = $pasien_id;
+        $gejala_pasien->gejala_id = $gejala_id;
+        $gejala_pasien->jawaban = $request->jawaban;
+        $gejala_pasien->save();
 
-            $this->hitungPersen($pasien_id);
-
-            return redirect()->route('hasilDiagnosa', $pasien_id);
-        }
+        return view('konsultasi_form_gejala', compact('gejala', 'pasien_id', 'categories', 'gejalas','next'));
         
     }
 
     public function diagnosa(Request $request) {
         $pasien_id = $request->pasien_id;
-        $gejala_pasien = GejalaPasien::where('pasien_id', $pasien_id)->get();
+        $gejala_pasien = GejalaPasien::where('pasien_id', $pasien_id)->where('jawaban', 'Iya')->get();
         foreach($gejala_pasien as $gejalas){
             $gejala = GejalaPenyakit::where('gejala_id', $gejalas->gejala_id)->get();
             foreach ($gejala as $penyakit) {

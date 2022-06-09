@@ -94,7 +94,7 @@
                             </div>
                             <hr>
                             <div class="row">
-                                <div class="col">
+                                {{-- <div class="col">
                                     <form action="/kirim" method="post">
                                         @csrf
                                         <input type="hidden" name="nama" id="nama" value="{{ $diagnosa->pasien->nama }}">
@@ -102,7 +102,7 @@
                                         <input type="hidden" name="penyakit" id="penyakit" value="{{ $diagnosa->penyakit->name }}">
                                         <button type="submit" class="btn btn-primary pull-right">Tanya Dokter <i class="fa-solid fa-user-doctor"></i></button>
                                     </form>
-                                </div>
+                                </div> --}}
                                 <div class="col">
                                     <p>
                                         <a href="{{ route('cetakDiagnosa', $diagnosa->pasien_id) }}" class="btn btn-outline-primary"  target="_blank">Cetak Hasil <i class="fa-solid fa-print"></i></a>

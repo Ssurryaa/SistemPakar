@@ -113,7 +113,7 @@
             <div class="row">
               <div class="col-8">
                 <div class="numbers mt-3 mb-3">
-                  <p class="text-sm mb-0 text-uppercase font-weight-bold">Kategori</p>
+                  <p class="text-sm mb-0 text-uppercase font-weight-bold">Kategori Artikel</p>
                   <h5 class="font-weight-bolder">
                     {{ $kategori_count }}
                   </h5>
